@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/aquasecurity/trivy/pkg/fanal/analyzer/os"
+	ftypes "github.com/aquasecurity/trivy/pkg/fanal/types"
 	"github.com/aquasecurity/trivy/pkg/types"
 
 	"github.com/future-architect/vuls/models"
@@ -91,7 +91,7 @@ func Convert(results types.Results) (result *models.ScanResult, err error) {
 				})
 			} else {
 				vulnInfo.LibraryFixedIns = append(vulnInfo.LibraryFixedIns, models.LibraryFixedIn{
-					Key:     trivyResult.Type,
+					Key:     string(trivyResult.Type),
 					Name:    vuln.PkgName,
 					Path:    trivyResult.Target,
 					FixedIn: vuln.FixedVersion,
@@ -176,24 +176,26 @@ func Convert(results types.Results) (result *models.ScanResult, err error) {
 	return scanResult, nil
 }
 
-func isTrivySupportedOS(family string) bool {
-	supportedFamilies := map[string]struct{}{
-		os.RedHat:             {},
-		os.Debian:             {},
-		os.Ubuntu:             {},
-		os.CentOS:             {},
-		os.Rocky:              {},
-		os.Alma:               {},
-		os.Fedora:             {},
-		os.Amazon:             {},
-		os.Oracle:             {},
-		os.Windows:            {},
-		os.OpenSUSE:           {},
-		os.OpenSUSELeap:       {},
-		os.OpenSUSETumbleweed: {},
-		os.SLES:               {},
-		os.Photon:             {},
-		os.Alpine:             {},
+func isTrivySupportedOS(family ftypes.TargetType) bool {
+	supportedFamilies := map[ftypes.TargetType]struct{}{
+		ftypes.Alma:               {},
+		ftypes.Alpine:             {},
+		ftypes.Amazon:             {},
+		ftypes.CBLMariner:         {},
+		ftypes.CentOS:             {},
+		ftypes.Chainguard:         {},
+		ftypes.Debian:             {},
+		ftypes.Fedora:             {},
+		ftypes.OpenSUSE:           {},
+		ftypes.OpenSUSELeap:       {},
+		ftypes.OpenSUSETumbleweed: {},
+		ftypes.Oracle:             {},
+		ftypes.Photon:             {},
+		ftypes.RedHat:             {},
+		ftypes.Rocky:              {},
+		ftypes.SLES:               {},
+		ftypes.Ubuntu:             {},
+		ftypes.Wolfi:              {},
 	}
 	_, ok := supportedFamilies[family]
 	return ok
